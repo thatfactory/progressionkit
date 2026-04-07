@@ -55,11 +55,11 @@ jobs:
             --disable-indexing \
             --output-path ./public \
             --transform-for-static-hosting \
-            --hosting-base-path progresskit
+            --hosting-base-path progressionkit
 
           cat > ./public/index.html <<'INDEX'
           <!doctype html>
-          <meta http-equiv="refresh" content="0; url=/progresskit/documentation/progressionkit/" />
+          <meta http-equiv="refresh" content="0; url=/progressionkit/documentation/progressionkit/" />
           <title>ProgressionKit Documentation</title>
           INDEX
 
