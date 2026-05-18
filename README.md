@@ -56,43 +56,6 @@ flowchart TB
   UPDATE --> UI
 ```
 
-## Integration
-
-### Xcode
-Use Xcode's [built-in support for SPM](https://developer.apple.com/documentation/xcode/adding_package_dependencies_to_your_app).
-
-*or...*
-
-### Package.swift
-In your `Package.swift`, add `ProgressionKit` as a dependency:
-
-```swift
-dependencies: [
-    .package(
-        url: "https://github.com/thatfactory/progressionkit",
-        from: "0.1.0"
-    )
-]
-```
-
-Associate the dependency with your target:
-
-```swift
-targets: [
-    .target(
-        name: "YourTarget",
-        dependencies: [
-            .product(
-                name: "ProgressionKit",
-                package: "progressionkit"
-            )
-        ]
-    )
-]
-```
-
-Run: `swift build`
-
 ## Quick Start
 
 Import the package and create an initial player profile:
@@ -108,7 +71,7 @@ Create an event whenever the player finishes one unit of content:
 ```swift
 let event = PKEvent(
     contentID: "lesson.greetings.001",
-    trackID: "spanish-basics",
+    trackID: "japanese-basics",
     tierID: "beginner",
     wasSuccessful: true
 )
@@ -163,7 +126,13 @@ In practice:
 
 ## SwiftUI Example (Simple Progress Bar)
 
-The example below mirrors the usage style in Deutsch: apply events, store the latest `PKUpdate`, and drive a simple progress bar from the returned values.
+This example shows a simple integration pattern: apply progression events, keep the latest `PKUpdate`, and render a progress bar from the returned values.
+
+### Video
+
+https://github.com/user-attachments/assets/3920bbde-7b6b-40f6-b02f-f5506410b4fb
+
+### Code
 
 ```swift
 import ProgressionKit
@@ -171,33 +140,43 @@ import SwiftUI
 
 struct ProgressionDemoView: View {
     @State private var profile = PKProfile()
-    @State private var latestUpdate: PKUpdate?
+    @State private var lessonNumber = 1
 
     private let config = PKConfig()
 
+    private var progress: Double {
+        min(Double(profile.totalXP) / Double(config.levelXP), 1)
+    }
+
     var body: some View {
         VStack(spacing: 16) {
-            if let latestUpdate {
-                let levelProgress = Double(latestUpdate.xpIntoLevel) / Double(latestUpdate.xpForNextLevel)
+            Text(progress < 1 ? "Level 1" : "Level 2 🥳")
+                .font(.headline)
 
-                Text("Level \(latestUpdate.playerLevel)")
-                    .font(.headline)
+            GeometryReader { geometry in
+                let totalWidth = geometry.size.width
+                let fillWidth = totalWidth * progress
 
-                ProgressView(value: levelProgress)
-                    .progressViewStyle(.linear)
+                ZStack(alignment: .leading) {
+                    RoundedRectangle(cornerRadius: 10)
+                        .fill(.gray.opacity(0.25))
 
-                Text("\(Int(levelProgress * 100))% to next level")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-            } else {
-                Text("No progress yet")
-                    .font(.headline)
+                    RoundedRectangle(cornerRadius: 10)
+                        .fill(.green)
+                        .frame(width: fillWidth)
+                        .animation(.snappy, value: progress)
+                }
             }
+            .frame(height: 16)
+
+            Text("\(Int(progress * 100))%")
+                .font(.caption)
+                .foregroundStyle(.secondary)
 
             Button("Complete Lesson") {
                 let event = PKEvent(
-                    contentID: "lesson.greetings.001",
-                    trackID: "spanish-basics",
+                    contentID: "lesson.greetings.\(lessonNumber)",
+                    trackID: "japanese-basics",
                     tierID: "beginner",
                     wasSuccessful: true
                 )
@@ -208,8 +187,10 @@ struct ProgressionDemoView: View {
                     config: config
                 )
 
-                profile = update.profile
-                latestUpdate = update
+                withAnimation(.snappy) {
+                    profile = update.profile
+                }
+                lessonNumber += 1
             }
         }
         .padding()
@@ -222,3 +203,40 @@ struct ProgressionDemoView: View {
     ProgressionDemoView()
 }
 ```
+
+## Integration
+
+### Xcode
+Use Xcode's [built-in support for SPM](https://developer.apple.com/documentation/xcode/adding_package_dependencies_to_your_app).
+
+*or...*
+
+### Package.swift
+In your `Package.swift`, add `ProgressionKit` as a dependency:
+
+```swift
+dependencies: [
+    .package(
+        url: "https://github.com/thatfactory/progressionkit",
+        from: "0.1.0"
+    )
+]
+```
+
+Associate the dependency with your target:
+
+```swift
+targets: [
+    .target(
+        name: "YourTarget",
+        dependencies: [
+            .product(
+                name: "ProgressionKit",
+                package: "progressionkit"
+            )
+        ]
+    )
+]
+```
+
+Run: `swift build`
