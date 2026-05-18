@@ -92,3 +92,133 @@ targets: [
 ```
 
 Run: `swift build`
+
+## Quick Start
+
+Import the package and create an initial player profile:
+
+```swift
+import ProgressionKit
+
+let profile = PKProfile()
+```
+
+Create an event whenever the player finishes one unit of content:
+
+```swift
+let event = PKEvent(
+    contentID: "lesson.greetings.001",
+    trackID: "spanish-basics",
+    tierID: "beginner",
+    wasSuccessful: true
+)
+```
+
+Apply the event to the profile:
+
+```swift
+let update = PKEngine.apply(
+    event: event,
+    to: profile
+)
+```
+
+`update` is a `PKUpdate` value that contains the updated `PKProfile` and derived progression values your app can render immediately.
+
+Common `PKUpdate` values you will typically use:
+
+- `update.profile`: persist this as the new `PKProfile`.
+- `update.playerLevel`: current player level.
+- `update.xpIntoLevel` and `update.xpForNextLevel`: useful for progress bars.
+- `update.newlyUnlockedTierIDs`: tiers unlocked by the latest event.
+- `update.didGrantXP`: whether the event changed XP.
+
+## Configure Progression Rules
+
+Use `PKConfig` when you want to customize level size, XP rewards, tier unlock order, and the mastery requirement for unlocking the next tier:
+
+```swift
+let config = PKConfig(
+    levelXP: 120,
+    masteryXP: 15,
+    tierOrder: ["beginner", "intermediate", "advanced"],
+    masteryRequirement: 4
+)
+```
+
+Apply the same event with your custom config:
+
+```swift
+let configuredUpdate = PKEngine.apply(
+    event: event,
+    to: profile,
+    config: config
+)
+```
+
+In practice:
+
+- Persist `configuredUpdate.profile` (your new `PKProfile`) after each event.
+- Read other `PKUpdate` values to update your UI (XP gain, level changes, unlock state, and mastery).
+
+## SwiftUI Example (Simple Progress Bar)
+
+The example below mirrors the usage style in Deutsch: apply events, store the latest `PKUpdate`, and drive a simple progress bar from the returned values.
+
+```swift
+import ProgressionKit
+import SwiftUI
+
+struct ProgressionDemoView: View {
+    @State private var profile = PKProfile()
+    @State private var latestUpdate: PKUpdate?
+
+    private let config = PKConfig()
+
+    var body: some View {
+        VStack(spacing: 16) {
+            if let latestUpdate {
+                let levelProgress = Double(latestUpdate.xpIntoLevel) / Double(latestUpdate.xpForNextLevel)
+
+                Text("Level \(latestUpdate.playerLevel)")
+                    .font(.headline)
+
+                ProgressView(value: levelProgress)
+                    .progressViewStyle(.linear)
+
+                Text("\(Int(levelProgress * 100))% to next level")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            } else {
+                Text("No progress yet")
+                    .font(.headline)
+            }
+
+            Button("Complete Lesson") {
+                let event = PKEvent(
+                    contentID: "lesson.greetings.001",
+                    trackID: "spanish-basics",
+                    tierID: "beginner",
+                    wasSuccessful: true
+                )
+
+                let update = PKEngine.apply(
+                    event: event,
+                    to: profile,
+                    config: config
+                )
+
+                profile = update.profile
+                latestUpdate = update
+            }
+        }
+        .padding()
+    }
+}
+
+// MARK: - Preview
+
+#Preview {
+    ProgressionDemoView()
+}
+```
