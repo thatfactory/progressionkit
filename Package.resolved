@@ -1,6 +1,15 @@
 {
-  "originHash" : "a7cf709b54776e438f795355cd120c1195b4865978d0fb04447d8782f185c8a3",
+  "originHash" : "537618524d8febb222b9556d3d27add53e153103a47050a496e01cc2e96f821f",
   "pins" : [
+    {
+      "identity" : "applogger",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/thatfactory/applogger",
+      "state" : {
+        "revision" : "75dbe6e22170cb7e7507645cc23ab31611a07c84",
+        "version" : "1.1.0"
+      }
+    },
     {
       "identity" : "swift-docc-plugin",
       "kind" : "remoteSourceControl",

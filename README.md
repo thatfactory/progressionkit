@@ -23,6 +23,12 @@ It models:
 
 The package is deliberately content-agnostic. Host apps decide what a track, content item, and tier mean, then feed those identifiers into `ProgressionKit`.
 
+## Logging
+
+ProgressionKit logs concise progression outcomes through [AppLogger](https://github.com/thatfactory/applogger) with subsystem `com.thatfactory.progressionkit` and category `progression`.
+
+Every package-owned line starts with `📈` and includes only the XP granted, resulting player level, and number of newly unlocked tiers. ProgressionKit does not log content, track, or tier identifiers.
+
 ## Implemented APIs
 
 - `PKEngine`: applies a progression event to a profile and returns the updated profile plus derived progress values.
@@ -218,7 +224,7 @@ In your `Package.swift`, add `ProgressionKit` as a dependency:
 dependencies: [
     .package(
         url: "https://github.com/thatfactory/progressionkit",
-        from: "0.1.3"
+        from: "0.1.4"
     )
 ]
 ```

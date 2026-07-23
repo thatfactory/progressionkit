@@ -18,6 +18,8 @@ It models XP gain from successful performance, player levels derived from total 
 
 The package is content-agnostic. Host apps decide what a track, content item, and tier mean, then feed those identifiers into ``PKEngine``.
 
+Each applied event emits one concise `📈` debug log through `AppLogger`. ProgressionKit uses subsystem `com.thatfactory.progressionkit`, category `progression`, and omits content, track, and tier identifiers.
+
 ## Usage
 
 ```swift

@@ -1,6 +1,8 @@
 import Foundation
 
 /// Applies progression events to profiles using a deterministic rule set.
+///
+/// Each application emits one `📈` debug log containing only the XP granted, resulting level, and unlock count.
 public enum PKEngine {
     /// Applies one progression event to a player profile.
     ///
@@ -103,7 +105,7 @@ private extension PKEngine {
         let playerLevel = (profile.totalXP / config.levelXP) + 1
         let xpIntoLevel = profile.totalXP % config.levelXP
 
-        return PKUpdate(
+        let update = PKUpdate(
             didGrantXP: didGrantXP,
             newlyUnlockedTierIDs: newlyUnlockedTierIDs,
             playerLevel: playerLevel,
@@ -111,5 +113,10 @@ private extension PKEngine {
             xpForNextLevel: config.levelXP,
             xpIntoLevel: xpIntoLevel
         )
+        PKLogging.logProgression(
+            update: update,
+            xpGranted: didGrantXP ? config.masteryXP : 0
+        )
+        return update
     }
 }
