@@ -1,41 +1,54 @@
-# ProgressionKit
+# Agent Guidelines
 
-## Context
+## Purpose
 
-ProgressionKit is a pure Swift package for deterministic XP, player levels, track mastery, and tier unlocks. Read [README.md](README.md) and the DocC catalog before changing public behavior.
+This public repository is the versioned source of truth for reusable ThatFactory agent guidance. Keep it generic enough to apply to multiple applications and Swift packages. Product decisions, concrete project paths, and exceptions belong in each consumer repository.
 
-The package is content-, storage-, UI-, and application-architecture agnostic. Host applications decide what content, tracks, tiers, persistence, and presentation mean.
+## Sources of truth
 
-## Shared guidelines
+- Use official Apple documentation for Apple APIs and Xcode behavior.
+- Distill durable policy from Xcode-provided skills; do not copy exported Apple skills into this repository.
+- Do not include private company information, credentials, personal absolute paths, or consumer-specific implementation details.
+- When shared and consumer guidance differ, the consumer's nearest applicable `AGENTS.md` is the explicit specialization.
+- Before changing this repository, verify that the consumer's checked-in guidelines version is current where applicable.
 
-Read only the guides relevant to the task:
+## Documentation changes
 
-- [Swift](AgentGuidelines/Guidelines/Swift/Swift.md)
-- [Swift style](AgentGuidelines/Guidelines/Swift/SwiftStyle.md)
-- [SwiftLint](AgentGuidelines/Guidelines/Swift/SwiftLint.md)
-- [Unit and integration testing](AgentGuidelines/Guidelines/Testing/UnitTesting.md)
-- [Documentation](AgentGuidelines/Guidelines/Documentation.md)
-- [Packages](AgentGuidelines/Guidelines/Packages.md)
-- [CI/CD](AgentGuidelines/Guidelines/CICD.md)
-- [Git repositories and SSH-first cloning](AgentGuidelines/Guidelines/Git/Repositories.md)
-- [GitHub pull requests](AgentGuidelines/Guidelines/GitHub/PullRequests.md)
-- [Xcode MCP](AgentGuidelines/Guidelines/Xcode/MCP.md)
-- [Xcode security audits](AgentGuidelines/Guidelines/Xcode/Security.md)
+- Keep each rule in the narrowest relevant guide and link to it rather than duplicating it.
+- Use physical folder terminology for Xcode projects. Do not call filesystem folders Xcode groups.
+- Keep examples generic and concise.
+- Use relative Markdown links inside this repository.
+- Update `README.md` when adding, moving, or removing a guide.
+- Update `CHANGELOG.md` and `VERSION` for a release.
+- When releasing a new version, update the version in both the README installation command and the README consumer-update command. Keep both commands aligned with the new release, for example:
 
-Redux, SwiftUI, and application-localization guidance do not apply to the package target.
+  ```sh
+  git subtree add \
+    --prefix=AgentGuidelines \
+    https://github.com/thatfactory/agent-guidelines.git \
+    <version> \
+    --squash
 
-## Physical folder map
+  git subtree pull \
+    --prefix=AgentGuidelines \
+    https://github.com/thatfactory/agent-guidelines.git \
+    <version> \
+    --squash
+  ```
 
-| Role | Physical folder |
-|---|---|
-| Package sources | `Sources/ProgressionKit/` |
-| DocC catalog | `Sources/ProgressionKit/ProgressionKit.docc/` |
-| Unit tests | `Tests/ProgressionKitTests/` |
+## Validation
 
-## Package specialization
+Run:
 
-- Keep progression updates deterministic for the same profile, event, and configuration.
-- Do not add storage, network, UI, Redux, or game-content dependencies.
-- Host applications own mapping from their domain identifiers and outcomes into `PKEvent`.
-- Preserve compiler-synthesized value semantics and serialization when evolving public models.
-- Update tests, DocC, README examples, and release notes when public behavior changes.
+```sh
+python3 Scripts/validate_guidelines.py
+```
+
+Fix every validation failure before releasing a version.
+
+## Releases
+
+- Use semantic versioning.
+- Create a Git tag and GitHub release matching `VERSION`.
+- Consumer repositories adopt releases deliberately through Git subtree updates.
+- Follow [the pull-request review workflow](Guidelines/GitHub/PullRequests.md) before merging any release change.

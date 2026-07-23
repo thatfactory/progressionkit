@@ -1,242 +1,132 @@
 <p align="center">
-  <a href="https://developer.apple.com/swift/"><img alt="Swift" src="https://img.shields.io/badge/Swift-6.4-ea7a50.svg?logo=swift&logoColor=white"></a>
-  <a href="https://developer.apple.com/xcode/"><img alt="Xcode" src="https://img.shields.io/badge/Xcode-27-50ace8.svg?logo=xcode&logoColor=white"></a>
-  <a href="https://en.wikipedia.org/wiki/List_of_Apple_operating_systems"><img alt="Platforms" src="https://img.shields.io/badge/anyAppleOS-26%2B-lightgrey.svg?logo=apple&logoColor=white"></a>
-  <a href="https://developer.apple.com/documentation/xcode/swift-packages"><img alt="SPM" src="https://img.shields.io/badge/SPM-ready-b68f6a.svg?logo=gitlfs&logoColor=white"></a>
-  <a href="https://thatfactory.github.io/progressionkit/documentation/progressionkit/"><img alt="DocC" src="https://img.shields.io/badge/DocC-documentation-0288D1.svg?logo=bookstack&logoColor=white"></a>
+  <a href="https://developer.apple.com/xcode/"><img alt="Xcode" src="https://img.shields.io/badge/Xcode-MCP-50ace8.svg?logo=xcode&logoColor=white"></a>
+  <a href="https://developers.openai.com/codex/mcp"><img alt="Codex" src="https://img.shields.io/badge/Codex-MCP-1F70C1.svg?logo=icloud&logoColor=white"></a>
+  <a href="https://github.com/thatfactory/agent-guidelines/commits/main"><img alt="Updated" src="https://img.shields.io/github/last-commit/thatfactory/agent-guidelines?label=Updated&logo=convertio&logoColor=white"></a>
+  <a href="https://github.com/thatfactory/agent-guidelines/releases"><img alt="Revision" src="https://img.shields.io/github/v/release/thatfactory/agent-guidelines?label=Revision&logo=gitbook&logoColor=white"></a>
   <a href="https://en.wikipedia.org/wiki/MIT_License"><img alt="License" src="https://img.shields.io/badge/License-MIT-67ac5b.svg?logo=googledocs&logoColor=white"></a>
-  <a href="https://github.com/thatfactory/progressionkit/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/thatfactory/progressionkit/actions/workflows/ci.yml/badge.svg"></a>
-  <a href="https://github.com/thatfactory/progressionkit/actions/workflows/release.yml"><img alt="Release" src="https://github.com/thatfactory/progressionkit/actions/workflows/release.yml/badge.svg"></a>
+  <a href="https://github.com/thatfactory/agent-guidelines/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/thatfactory/agent-guidelines/actions/workflows/ci.yml/badge.svg"></a>
 </p>
 
-# ProgressionKit
-A reusable progression engine that turns player performance into configurable XP, levels, and unlocks across games and apps. 📈
+# Agent Guidelines
 
-`ProgressionKit` is a pure Swift package for apps and games that need deterministic progression logic without coupling progression rules to storage or UI frameworks.
+`agent-guidelines` is ThatFactory's public, versioned source of truth for reusable instructions given to coding agents. It centralizes stable decisions about Swift development, Redux architecture, testing, documentation, logging, packages, CI/CD, localization, and Xcode tooling while leaving product context and exceptions in each consuming repository.
 
-It models:
+The repository contains documentation, not a Swift product. Consumers install a tagged release as a Git subtree at `AgentGuidelines/`, so every agent sees ordinary version-controlled files at predictable paths.
 
-- `XP` gain from successful performance.
-- Player levels derived from total XP.
-- Track-scoped mastery across distinct content.
-- Tier unlocks such as `beginner`, `intermediate`, and `advanced`.
+## How it fits together
 
-The package is deliberately content-agnostic. Host apps decide what a track, content item, and tier mean, then feed those identifiers into `ProgressionKit`.
-
-## Implemented APIs
-
-- `PKEngine`: applies a progression event to a profile and returns the updated profile plus derived progress values.
-- `PKProfile`: persisted progression state for a player.
-- `PKConfig`: tunable progression rules such as level size, XP reward, tier order, and unlock thresholds.
-- `PKEvent`: a single outcome emitted by the host app.
-- `PKUpdate`: the result of applying one event.
-
-## Structure
-
-```mermaid
-flowchart TB
-  subgraph HOST["Host App/Game"]
-    EVENTS["Performance Events"]
-    STORAGE["Storage Layer"]
-    UI["UI / HUD / XP Bar"]
-  end
-
-  subgraph PK[" "]
-    ENGINE["ProgressionKit"]
-    PROFILE["PKProfile"]
-    CONFIG["PKConfig"]
-    UPDATE["PKUpdate"]
-  end
-
-  EVENTS --> ENGINE
-  CONFIG --> ENGINE
-  ENGINE --> PROFILE
-  ENGINE --> UPDATE
-  PROFILE --> STORAGE
-  UPDATE --> UI
+```text
+                  thatfactory/agent-guidelines
+                  versioned GitHub repository
+                             |
+                       tagged release
+                         e.g. 0.0.3
+                             |
+                    git subtree add/pull
+                             |
+                             v
++---------------- Consumer project or package ----------------+
+|                                                              |
+|  AGENTS.md                                                   |
+|  |-- local product/package context                           |
+|  |-- concrete project paths                                  |
+|  |-- local exceptions                                        |
+|  `-- pointers to shared guidelines -----------------+        |
+|                                                     |        |
+|  AgentGuidelines/                                   |        |
+|  |-- VERSION                                        |        |
+|  `-- Guidelines/ <----------------------------------+        |
+|      |-- Architecture/Redux.md                              |
+|      |-- Swift/SwiftUI.md                                   |
+|      |-- Testing/UnitTesting.md                             |
+|      `-- Xcode/MCP.md                                       |
+|                                                              |
+|  Sources and project files                                   |
++----------------------------+---------------------------------+
+                             |
+              reads instructions and project files
+                  +----------+----------+
+                  v                     v
+               Codex                Xcode agent
+                  |
+                  | Xcode MCP (`xcrun mcpbridge`)
+                  v
+                Xcode
 ```
 
-## Quick Start
+The subtree does not automatically import every guide into an agent's context. A consumer's root or folder-scoped `AGENTS.md` tells the agent which shared guides to read for the task. The nearest local `AGENTS.md` can specialize or override the shared baseline.
 
-Import the package and create an initial player profile:
+## Guideline catalog
 
-```swift
-import ProgressionKit
+- [Redux architecture and physical folder organization](Guidelines/Architecture/Redux.md)
+- [Swift](Guidelines/Swift/Swift.md)
+- [Swift style](Guidelines/Swift/SwiftStyle.md)
+- [SwiftUI](Guidelines/Swift/SwiftUI.md)
+- [SwiftLint](Guidelines/Swift/SwiftLint.md)
+- [Localization](Guidelines/Swift/Localization.md)
+- [Unit and integration testing](Guidelines/Testing/UnitTesting.md)
+- [Documentation](Guidelines/Documentation.md)
+- [Logging](Guidelines/Logging.md)
+- [Swift packages](Guidelines/Packages.md)
+- [Development and reusability](Guidelines/Development.md)
+- [CI/CD](Guidelines/CICD.md)
+- [Git repositories and SSH-first cloning](Guidelines/Git/Repositories.md)
+- [GitHub pull requests](Guidelines/GitHub/PullRequests.md)
+- [Xcode MCP and visual verification](Guidelines/Xcode/MCP.md)
+- [Xcode security audits](Guidelines/Xcode/Security.md)
 
-let profile = PKProfile()
+Only reference the guides that apply. A UI-agnostic package normally uses Swift, style, testing, documentation, logging, packages, CI/CD, and Xcode guidance, but not Redux or SwiftUI guidance.
+
+## Add to a consumer
+
+From the consumer repository root, install a tagged release:
+
+```sh
+git subtree add \
+  --prefix=AgentGuidelines \
+  https://github.com/thatfactory/agent-guidelines.git \
+  0.0.7 \
+  --squash
 ```
 
-Create an event whenever the player finishes one unit of content:
+Copy and adapt [the consumer template](Templates/AGENTS.md). Keep the consumer file small: describe the product or package, map its concrete physical folders, point to the applicable shared guides, and state only genuine exceptions.
 
-```swift
-let event = PKEvent(
-    contentID: "lesson.greetings.001",
-    trackID: "japanese-basics",
-    tierID: "beginner",
-    wasSuccessful: true
-)
+## Update a consumer
+
+Review the target release's changelog, then pull it deliberately:
+
+```sh
+git subtree pull \
+  --prefix=AgentGuidelines \
+  https://github.com/thatfactory/agent-guidelines.git \
+  0.0.7 \
+  --squash
 ```
 
-Apply the event to the profile:
+Confirm `AgentGuidelines/VERSION`, review the subtree diff, validate local `AGENTS.md` pointers, and run the consumer's relevant tests. Updates are intentionally not automatic: one guideline release cannot silently change every project.
 
-```swift
-let update = PKEngine.apply(
-    event: event,
-    to: profile
-)
-```
+## Maintain the source of truth
 
-`update` is a `PKUpdate` value that contains the updated `PKProfile` and derived progression values your app can render immediately.
+1. Export current Xcode skills to a temporary review location when a new Xcode release materially changes agent behavior:
 
-Common `PKUpdate` values you will typically use:
+   ```sh
+   xcrun agent skills export --output-dir <temporary-directory>
+   ```
 
-- `update.profile`: persist this as the new `PKProfile`.
-- `update.playerLevel`: current player level.
-- `update.xpIntoLevel` and `update.xpForNextLevel`: useful for progress bars.
-- `update.newlyUnlockedTierIDs`: tiers unlocked by the latest event.
-- `update.didGrantXP`: whether the event changed XP.
+2. Compare relevant guidance with this repository and official Apple documentation.
+3. Bring over durable policy, not the exported skill text or an SDK API catalog.
+4. Remove obsolete or conflicting rules instead of accumulating historical alternatives.
+5. Run `python3 Scripts/validate_guidelines.py`.
+6. Update `VERSION` and `CHANGELOG.md`, open a pull request, and wait for approval before merging.
+7. After the pull request has merged, create the matching tag and GitHub release.
 
-## Configure Progression Rules
+## Precedence
 
-Use `PKConfig` when you want to customize level size, XP rewards, tier unlock order, and the mastery requirement for unlocking the next tier:
+For a consumer task, apply instructions in this order:
 
-```swift
-let config = PKConfig(
-    levelXP: 120,
-    masteryXP: 15,
-    tierOrder: ["beginner", "intermediate", "advanced"],
-    masteryRequirement: 4
-)
-```
+1. The user's explicit request.
+2. The nearest applicable consumer `AGENTS.md`.
+3. The consumer root `AGENTS.md`.
+4. The shared guides explicitly referenced by those files.
 
-Apply the same event with your custom config:
-
-```swift
-let configuredUpdate = PKEngine.apply(
-    event: event,
-    to: profile,
-    config: config
-)
-```
-
-In practice:
-
-- Persist `configuredUpdate.profile` (your new `PKProfile`) after each event.
-- Read other `PKUpdate` values to update your UI (XP gain, level changes, unlock state, and mastery).
-
-## SwiftUI Example (Simple Progress Bar)
-
-This example shows a simple integration pattern: apply progression events, keep the latest `PKUpdate`, and render a progress bar from the returned values.
-
-### Video
-
-https://github.com/user-attachments/assets/3920bbde-7b6b-40f6-b02f-f5506410b4fb
-
-### Code
-
-```swift
-import ProgressionKit
-import SwiftUI
-
-struct ProgressionDemoView: View {
-    @State private var profile = PKProfile()
-    @State private var lessonNumber = 1
-
-    private let config = PKConfig()
-
-    private var progress: Double {
-        min(Double(profile.totalXP) / Double(config.levelXP), 1)
-    }
-
-    var body: some View {
-        VStack(spacing: 16) {
-            Text(progress < 1 ? "Level 1" : "Level 2 🥳")
-                .font(.headline)
-
-            GeometryReader { geometry in
-                let totalWidth = geometry.size.width
-                let fillWidth = totalWidth * progress
-
-                ZStack(alignment: .leading) {
-                    RoundedRectangle(cornerRadius: 10)
-                        .fill(.gray.opacity(0.25))
-
-                    RoundedRectangle(cornerRadius: 10)
-                        .fill(.green)
-                        .frame(width: fillWidth)
-                        .animation(.snappy, value: progress)
-                }
-            }
-            .frame(height: 16)
-
-            Text("\(Int(progress * 100))%")
-                .font(.caption)
-                .foregroundStyle(.secondary)
-
-            Button("Complete Lesson") {
-                let event = PKEvent(
-                    contentID: "lesson.greetings.\(lessonNumber)",
-                    trackID: "japanese-basics",
-                    tierID: "beginner",
-                    wasSuccessful: true
-                )
-
-                let update = PKEngine.apply(
-                    event: event,
-                    to: profile,
-                    config: config
-                )
-
-                withAnimation(.snappy) {
-                    profile = update.profile
-                }
-                lessonNumber += 1
-            }
-        }
-        .padding()
-    }
-}
-
-// MARK: - Preview
-
-#Preview {
-    ProgressionDemoView()
-}
-```
-
-## Integration
-
-### Xcode
-Use Xcode's [built-in support for SPM](https://developer.apple.com/documentation/xcode/adding_package_dependencies_to_your_app).
-
-*or...*
-
-### Package.swift
-In your `Package.swift`, add `ProgressionKit` as a dependency:
-
-```swift
-dependencies: [
-    .package(
-        url: "https://github.com/thatfactory/progressionkit",
-        from: "0.1.3"
-    )
-]
-```
-
-Associate the dependency with your target:
-
-```swift
-targets: [
-    .target(
-        name: "YourTarget",
-        dependencies: [
-            .product(
-                name: "ProgressionKit",
-                package: "progressionkit"
-            )
-        ]
-    )
-]
-```
-
-Run: `swift build`
+Official Apple documentation remains authoritative for API behavior. A local convention can deliberately narrow a choice, but it must not rely on behavior contradicted by the current SDK documentation.
