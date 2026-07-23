@@ -15,6 +15,7 @@ Read only the guides relevant to the task:
 - [SwiftLint](AgentGuidelines/Guidelines/Swift/SwiftLint.md)
 - [Unit and integration testing](AgentGuidelines/Guidelines/Testing/UnitTesting.md)
 - [Documentation](AgentGuidelines/Guidelines/Documentation.md)
+- [Logging](AgentGuidelines/Guidelines/Logging.md)
 - [Packages](AgentGuidelines/Guidelines/Packages.md)
 - [CI/CD](AgentGuidelines/Guidelines/CICD.md)
 - [Git repositories and SSH-first cloning](AgentGuidelines/Guidelines/Git/Repositories.md)
@@ -39,3 +40,4 @@ Redux, SwiftUI, and application-localization guidance do not apply to the packag
 - Host applications own mapping from their domain identifiers and outcomes into `PKEvent`.
 - Preserve compiler-synthesized value semantics and serialization when evolving public models.
 - Update tests, DocC, README examples, and release notes when public behavior changes.
+- Use logging subsystem `com.thatfactory.progressionkit`, category `progression`, and canonical package emoji `📈`.

@@ -17,15 +17,28 @@ let package = Package(
         )
     ],
     dependencies: [
+        .package(url: "https://github.com/thatfactory/applogger", from: "1.1.0"),
         .package(url: "https://github.com/swiftlang/swift-docc-plugin", from: "1.5.0")
     ],
     targets: [
         .target(
-            name: "ProgressionKit"
+            name: "ProgressionKit",
+            dependencies: [
+                .product(
+                    name: "AppLogger",
+                    package: "applogger"
+                )
+            ]
         ),
         .testTarget(
             name: "ProgressionKitTests",
-            dependencies: ["ProgressionKit"]
+            dependencies: [
+                "ProgressionKit",
+                .product(
+                    name: "AppLogger",
+                    package: "applogger"
+                )
+            ]
         )
     ]
 )
