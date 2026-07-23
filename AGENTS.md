@@ -41,3 +41,6 @@ Redux, SwiftUI, and application-localization guidance do not apply to the packag
 - Preserve compiler-synthesized value semantics and serialization when evolving public models.
 - Update tests, DocC, README examples, and release notes when public behavior changes.
 - Use logging subsystem `com.thatfactory.progressionkit`, category `progression`, and canonical package emoji `📈`.
+## Codex review scope
+
+For consumer pull requests, do not substantively review `AgentGuidelines/**` after exact tagged-tree provenance has been verified. Verify its `VERSION`, compare its tree with the matching central tag, and verify the required `.gitattributes` rule. If provenance does not match exactly, review the subtree contents and stop the merge. Report substantive guideline feedback against the central `agent-guidelines` pull request.
