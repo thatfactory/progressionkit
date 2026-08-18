@@ -224,7 +224,7 @@ In your `Package.swift`, add `ProgressionKit` as a dependency:
 dependencies: [
     .package(
         url: "https://github.com/thatfactory/progressionkit",
-        from: "0.1.5"
+        from: "0.1.6"
     )
 ]
 ```
