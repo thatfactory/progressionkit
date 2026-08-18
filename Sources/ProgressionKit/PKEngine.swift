@@ -64,8 +64,8 @@ public enum PKEngine {
 
 // MARK: - Private
 
-private extension PKEngine {
-    static func defaultTrackProgress(config: PKConfig) -> PKTrackProgress {
+extension PKEngine {
+    fileprivate static func defaultTrackProgress(config: PKConfig) -> PKTrackProgress {
         let firstTierID = config.tierOrder[0]
 
         return PKTrackProgress(
@@ -73,7 +73,7 @@ private extension PKEngine {
         )
     }
 
-    static func unlockNextTierIfNeeded(
+    fileprivate static func unlockNextTierIfNeeded(
         trackProgress: inout PKTrackProgress,
         tierID: String,
         config: PKConfig
@@ -96,7 +96,7 @@ private extension PKEngine {
         return [nextTierID]
     }
 
-    static func makeUpdate(
+    fileprivate static func makeUpdate(
         profile: PKProfile,
         config: PKConfig,
         didGrantXP: Bool,

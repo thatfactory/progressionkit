@@ -1,4 +1,5 @@
 import Testing
+
 @testable import ProgressionKit
 
 @Test func grantsXPForFirstSuccessfulCompletion() {
@@ -69,7 +70,7 @@ import Testing
 
 @Test func unlocksIntermediateAfterDistinctBeginnerMastery() {
     // Given
-    let events = (1 ... 5).map { index in
+    let events = (1...5).map { index in
         PKEvent(
             contentID: "lesson-\(index)",
             trackID: "a11-reading",
@@ -104,7 +105,7 @@ import Testing
 
 @Test func unlocksAdvancedAfterDistinctIntermediateMastery() {
     // Given
-    let beginnerEvents = (1 ... 5).map { index in
+    let beginnerEvents = (1...5).map { index in
         PKEvent(
             contentID: "beginner-\(index)",
             trackID: "a11-writing",
@@ -112,7 +113,7 @@ import Testing
             wasSuccessful: true
         )
     }
-    let intermediateEvents = (1 ... 5).map { index in
+    let intermediateEvents = (1...5).map { index in
         PKEvent(
             contentID: "intermediate-\(index)",
             trackID: "a11-writing",
@@ -160,7 +161,7 @@ import Testing
         tierOrder: ["beginner", "intermediate", "advanced"],
         masteryRequirement: 5
     )
-    let events = (1 ... 4).map { index in
+    let events = (1...4).map { index in
         PKEvent(
             contentID: "lesson-\(index)",
             trackID: "a11-listening",

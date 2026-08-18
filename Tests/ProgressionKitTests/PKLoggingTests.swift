@@ -1,6 +1,7 @@
 import AppLogger
 import Foundation
 import Testing
+
 @testable import ProgressionKit
 
 @Suite struct PKLoggingTests {
